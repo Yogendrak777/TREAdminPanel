@@ -1,10 +1,11 @@
-import React from 'react';
 import './App.css';
 import NavbarIndex from './Components/Navbar/NavbarIndex';
 import LoginIndex from './Components/Login/LoginIndex';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import HomeIndex from './Components/Homepage/HomeIndex';
 
 function App() {
+
 
   const route = createBrowserRouter([
     {
@@ -14,7 +15,11 @@ function App() {
           {
             path : '/',
             element : <LoginIndex/>
-        }
+          },
+          {
+            path : '/home',
+            element : <HomeIndex/>
+          }
       ]
     },
     

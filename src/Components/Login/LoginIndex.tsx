@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BaseContainer,
   LoginContainer,
@@ -9,6 +9,14 @@ import {
 import { useNavigate } from "react-router-dom";
 
 export default function LoginIndex() {
+
+  useEffect(() => {
+    // Disable the back button
+    window.history.pushState(null, window.location.href);
+    window.onpopstate = function () {
+      window.history.pushState(null,  window.location.href);
+    };
+  }, []);
 
   const navigate = useNavigate(); 
   const [phoneNumber, setPhoneNumber] = useState<any>("");
@@ -32,9 +40,10 @@ export default function LoginIndex() {
   };
 
   const handelSubmit = () => {
+
     if (Admin.includes(phoneNumber) && AdminPassword.includes(passwordNumber)) {
       alert("Welcome to Admin Panel");
-      navigate("")
+      navigate("/home")
     } else {
       alert("Invalid credentials, Please try again");
     }

@@ -7,29 +7,61 @@ import {
   InputFieldContainer,
 } from "./Skins";
 import { useNavigate } from "react-router-dom";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import { App } from '..//FirebaseConfig/Firebase'
 
 export default function LoginIndex() {
-
+  const navigate = useNavigate();
   useEffect(() => {
     // Disable the back button
     window.history.pushState(null, window.location.href);
     window.onpopstate = function () {
-      window.history.pushState(null,  window.location.href);
+      window.history.pushState(null, window.location.href);
     };
   }, []);
 
-  const navigate = useNavigate(); 
+  const SendAuthData = () => {
+  const auth = getAuth(App);
+
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const uid = user.uid;
+    alert(uid)
+    navigate("/home")
+  } else {
+    alert("sign out")
+    signInWithEmailAndPassword(auth, "yogendragowdak006@gmail.com", "LaserForce")
+    .then((userCredential) => {
+    const user = userCredential.user;
+    alert(user)
+
+    })
+   .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    alert(errorMessage)
+  });
+}
+});
+
+  // createUserWithEmailAndPassword(auth, "yogendragowdak006@gmail.com", "LaserForce")
+  //   .then((userCredential) => {
+  //     // Signed up 
+  //     const user = userCredential.user;
+  //     alert(user)
+  //   })
+  //   .catch((error) => {
+  //     const errorCode = error.code;
+  //     const errorMessage = error.message;
+  //     alert(errorMessage)
+  //   });
+  }
+
+  
   const [phoneNumber, setPhoneNumber] = useState<any>("");
   const [passwordNumber, setPasswordNumber] = useState<any>("");
-  const [Admin, setAdmin] = useState<any>([
-    "9353437216",
-    "9380138177",
-    "8618097544",
-  ]);
-  const [AdminPassword, setAdminPAssword] = useState<any>([
-    "TRE@123",
-    "tre@123",
-  ]);
+  
 
   const handelPhoneNumber = (e: any) => {
     setPhoneNumber(e.target.value);
@@ -40,14 +72,19 @@ export default function LoginIndex() {
   };
 
   const handelSubmit = () => {
-
-    if (Admin.includes(phoneNumber) && AdminPassword.includes(passwordNumber)) {
-      alert("Welcome to Admin Panel");
-      navigate("/home")
-    } else {
-      alert("Invalid credentials, Please try again");
-    }
+    SendAuthData()
+    
   };
+
+  const handelSignOut = () => {
+
+    const auth = getAuth();
+    signOut(auth).then(() => {
+        alert("signout ")
+    }).catch((error) => {
+
+    });
+  }
 
   return (
     <BaseContainer>
@@ -67,7 +104,9 @@ export default function LoginIndex() {
           />
         </InputFieldContainer>
         <SubmitButton onClick={handelSubmit}> Submit </SubmitButton>
+        {/* <button onClick={handelSignOut}> sign out </button> */}
       </LoginContainer>
     </BaseContainer>
   );
 }
+

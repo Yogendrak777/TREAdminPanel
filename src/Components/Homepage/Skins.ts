@@ -17,10 +17,15 @@ export const CardDetailsContainer = styled.div`
     height : auto;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    text-algin : center;
+    justify-content: center;
+
 `;
 
 export const CardContainer = styled.div`
-    width : 10em;
+    width : 12em;
     height : 10em;
     box-shadow: 1px 1px 5px gray;
     border : 5px;

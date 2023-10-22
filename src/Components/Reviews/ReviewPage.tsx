@@ -110,10 +110,13 @@ export default function ReviewPage() {
               review : addData,
               name : reviewerName
             });
-            console.log("Document written with ID: ", docRef.id);
+           
+           alert("Document written with ID: "+ docRef.id);
+          
           } catch (e) {
             console.error("Error adding document: ", e);
-          }
+            alert("failed to uploaded")
+          } 
         }
         catch (e) {
           console.error("Error adding document: ", e);

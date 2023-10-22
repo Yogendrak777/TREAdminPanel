@@ -24,6 +24,7 @@ export const LoginContainer = styled.div`
     display: flex;
     flex-direction: column;
     border-radius : 1em;
+   
 `;
 
 export const InputFieldContainer =  styled.div`
@@ -32,6 +33,10 @@ export const InputFieldContainer =  styled.div`
     justify-content: center;
     display: flex;
     flex-direction: row;
+
+    @media only screen and (max-width: 600px) {
+        flex-direction: column;
+    }
 `;
 
 export const InputFiled = styled.input`

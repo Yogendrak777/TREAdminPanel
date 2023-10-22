@@ -8,7 +8,8 @@ export const NavbarContainer = styled.div`
     top : 0px;
     left : 0px;
     align-items: center;
-    
+    z-index : 100;
+    background-color : white;
 `;
 
 export const ImageContainer = styled.img`

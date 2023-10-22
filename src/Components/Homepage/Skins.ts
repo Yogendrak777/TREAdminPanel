@@ -10,6 +10,7 @@ export const HomepageContainer = styled.div`
     justify-content: center;
     display: flex;
     flex-direction: column;
+    
 `;
 
 export const CardDetailsContainer = styled.div`
@@ -27,7 +28,7 @@ export const CardDetailsContainer = styled.div`
 export const CardContainer = styled.div`
     width : 12em;
     height : 10em;
-    box-shadow: 1px 1px 5px gray;
+    box-shadow: 1px 1px 5px #778899;
     border : 5px;
     padding : 2em;
     margin : 1em;
@@ -37,5 +38,9 @@ export const CardContainer = styled.div`
     display: flex;
     flex-direction: column;
     border-radius : 1em;
+
+    // &:hover{
+    //     margin : 2em;
+    // }
 `;
 

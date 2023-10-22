@@ -7,13 +7,23 @@ import {
   InputFieldContainer,
 } from "./Skins";
 import { useNavigate } from "react-router-dom";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
-import { App } from '..//FirebaseConfig/Firebase'
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+} from "firebase/auth";
+import { App } from "..//FirebaseConfig/Firebase";
 
 export default function LoginIndex() {
   const navigate = useNavigate();
+  const [emailId, setEmailId] = useState<any>("");
+  const [passwordNumber, setPasswordNumber] = useState<any>("");
+
   useEffect(() => {
     // Disable the back button
+    handelSignOut();
     window.history.pushState(null, window.location.href);
     window.onpopstate = function () {
       window.history.pushState(null, window.location.href);
@@ -21,50 +31,44 @@ export default function LoginIndex() {
   }, []);
 
   const SendAuthData = () => {
-  const auth = getAuth(App);
+    const auth = getAuth(App);
+    if (emailId !== "" && passwordNumber !== "") {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const uid = user.uid;
+          navigate("/home");
+        } else {
+          signInWithEmailAndPassword(auth, emailId, passwordNumber)
+            .then((userCredential) => {
+              const user = userCredential.user;
+              
+            })
+            .catch((error) => {
+              const errorCode = error.code;
+              const errorMessage = error.message;
+              alert(errorMessage);
+            });
+        }
+      });
+    } else {
+      alert("Enter the email and password Correctly");
+    }
 
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    const uid = user.uid;
-    alert(uid)
-    navigate("/home")
-  } else {
-    alert("sign out")
-    signInWithEmailAndPassword(auth, "yogendragowdak006@gmail.com", "LaserForce")
-    .then((userCredential) => {
-    const user = userCredential.user;
-    alert(user)
-
-    })
-   .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    alert(errorMessage)
-  });
-}
-});
-
-  // createUserWithEmailAndPassword(auth, "yogendragowdak006@gmail.com", "LaserForce")
-  //   .then((userCredential) => {
-  //     // Signed up 
-  //     const user = userCredential.user;
-  //     alert(user)
-  //   })
-  //   .catch((error) => {
-  //     const errorCode = error.code;
-  //     const errorMessage = error.message;
-  //     alert(errorMessage)
-  //   });
-  }
-
-  
-  const [phoneNumber, setPhoneNumber] = useState<any>("");
-  const [passwordNumber, setPasswordNumber] = useState<any>("");
-  
+    // createUserWithEmailAndPassword(auth, "yogendragowdak006@gmail.com", "LaserForce")
+    //   .then((userCredential) => {
+    //     // Signed up
+    //     const user = userCredential.user;
+    //     alert(user)
+    //   })
+    //   .catch((error) => {
+    //     const errorCode = error.code;
+    //     const errorMessage = error.message;
+    //     alert(errorMessage)
+    //   });
+  };
 
   const handelPhoneNumber = (e: any) => {
-    setPhoneNumber(e.target.value);
+    setEmailId(e.target.value);
   };
 
   const handelPassword = (e: any) => {
@@ -72,19 +76,20 @@ onAuthStateChanged(auth, (user) => {
   };
 
   const handelSubmit = () => {
-    SendAuthData()
-    
+    SendAuthData();
   };
 
   const handelSignOut = () => {
-
     const auth = getAuth();
-    signOut(auth).then(() => {
-        alert("signout ")
-    }).catch((error) => {
-
-    });
-  }
+    signOut(auth)
+      .then(() => {
+        alert("Session TimeOut")
+      })
+      .catch((error) => {
+        console.log(error);
+        
+      });
+  };
 
   return (
     <BaseContainer>
@@ -104,9 +109,7 @@ onAuthStateChanged(auth, (user) => {
           />
         </InputFieldContainer>
         <SubmitButton onClick={handelSubmit}> Submit </SubmitButton>
-        {/* <button onClick={handelSignOut}> sign out </button> */}
       </LoginContainer>
     </BaseContainer>
   );
 }
-

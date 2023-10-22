@@ -93,6 +93,8 @@ export default function Index(props:any) {
   const [getInterCom, setInterComData] = useState<any>("N/A");
   const [getSwimmingPool, setSwimmingPoolData] = useState<any>("N/A");
   const [getVisitorsParking, setVisitorsParkingData] = useState<any>("N/A");
+  const [getAddressData, setAddressData] = useState<any>("");
+  const [getContentData, setContentData] = useState<any>("");
 
   const [getUniqueid, setUniqueId] = useState<any>("")
 
@@ -217,6 +219,8 @@ export default function Index(props:any) {
           Power : getPower,
           Security : getSecurity,
           uniqueId : getUniqueid,
+          Address : getAddressData,
+          ContactNumber : getContentData,
           Amenities : {
             ClubHouse : getClubhouse,
             Gym : getGym,
@@ -504,6 +508,14 @@ export default function Index(props:any) {
   const HandleVisitor = (event: React.ChangeEvent<HTMLInputElement>) => {
     setVisitorsParkingData(event.target.value);
   };
+
+  const HandelAddress = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAddressData(event.target.value)
+  }
+
+  const handleContantData = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setContentData(event.target.value)
+  }
 
   return (
     <BaseContainer>
@@ -1338,9 +1350,18 @@ export default function Index(props:any) {
         <CardContainer AnimationStart={showAnimation}>
           <CardCheckBoxContainer>
           <LabelContainerOnImages> Please Enter Property Description</LabelContainerOnImages>
+            <InputNameContainer
+              type="text"
+              placeholder='Enter the Contact Number'
+              onChange={handleContantData}
+            />
+          <InputReviewContainer
+              onChange={(e: any) => HandelAddress(e)}
+              placeholder="Enter the Property Address here"
+            />
             <InputReviewContainer
               onChange={(e: any) => HandelReview(e)}
-              placeholder="Enter the review here"
+              placeholder="Enter the Property Description here"
             />
 
           </CardCheckBoxContainer>

@@ -24,7 +24,7 @@ export default function DispalyData(props:any) {
   const getDisaplyData = async () => {
     try {
       const db = getFirestore(App);
-      const querySnapshot = await getDocs(collection(db, props.TypeOfProperty? props.TypeOfProperty: "PremBangProperty" ));
+      const querySnapshot = await getDocs(collection(db, "PropertyData" ));
       const data = querySnapshot.docs.map((doc) => doc.data());
        setShowData(data);
       

@@ -10,13 +10,9 @@ import {
   InputImageContainer,
   CheckBoxContainer,
   InputCheckContainer,
-  CardCheckBoxContainer,
   LabelContainer,
-  CheckRowContainer,
   LabelContainerOnImages,
-  RadioButtonForPrice,
-  PriceNegoContainer,
-  CardColumnContainerForFacing,
+  LabelContainerForCheckBox,
 } from "./Skins";
 import {
   getFirestore,
@@ -38,48 +34,45 @@ import {
   uploadBytesResumable,
   getDownloadURL,
 } from "firebase/storage";
-
 import { App } from "../FirebaseConfig/Firebase";
+import Select from "react-select";
 
-export default function Index(props:any) {
+export default function Index(props: any) {
   const [File, setFile] = useState<any>([]);
   const [percent, setPercent] = useState(0);
   const [showAnimation, setShowAnimation] = useState<boolean>(true);
-  const [getImageContainer, setGetImageContainer] = useState<boolean>(true);
-  const [getApartmentType, setGetApartmentType] = useState<boolean>(false);
-  const [showProjectName, setShowProjectName] = useState<boolean>(false);
-  const [showBHK, setShowBHK] = useState<boolean>(false);
-  const [showFacing, setShowFacing] = useState<boolean>(false);
-  const [showPropertyAge, setShowFPropertyAge] = useState<boolean>(false);
-  const [showFloor, setShowFloor] = useState<boolean>(false);
-  const [showPrices, setShowPrices] = useState<boolean>(false);
-  const [showFurnishing, setShowFurnishing] = useState<boolean>(false);
-  const [showParking, setShowParking] = useState<boolean>(false);
-  const [showWater, setShowWater] = useState<boolean>(false);
-  const [showPowerSupply, setshowPowerSupply] = useState<boolean>(false);
-  const [showSecurity, setShowSecurity] = useState<boolean>(false);
-  const [showamenities, setShowamenities] = useState<boolean>(false);
-  const [showDescription, setShowDescription] = useState<boolean>(false);
 
-  const [getApartmentTypeData, setGetApartmentTypeData] = useState<any>("");
-  const [getPropertyNameData, setPropertyNameData] = useState<any>("");
+  const [getImageContainer, setGetImageContainer] = useState<boolean>(false);
+  const [showPropertyDetailsSlide, setShowPropertyDetailsSlide] =
+    useState<boolean>(true);
+  const [showSaleDetailsSlide, setShowSaleDetailsSlide] =
+    useState<boolean>(false);
+  const [showAmenitiesSlide, setShowAmenitiesSlide] = useState<boolean>(false);
+  const [showLocationSlide, setShowLocationSlide] = useState<boolean>(false);
+  const [showAdditionInfoSlide, setShowAdditionInfoSlide] =
+    useState<boolean>(false);
+  const [showYourAvailabilitySlide, setShowYourAvailabilitySlide] =
+    useState<boolean>(false);
+
+  const [getApartmentTypeData, setGetApartmentTypeData] = useState<any>("N/A");
+  const [getPropertyNameData, setPropertyNameData] = useState<any>("N/A");
   const [getBuildUpAreaData, setBuildUpAreaData] = useState<any>("");
   const [getCarpetAreaData, setCarpetAreaData] = useState<any>("");
-  const [getBHKData, setShowBHKData] = useState<any>("");
-  const [getFacingData, setShowFacingData] = useState<any>("");
-  const [getPropertyAgeData, setShowFPropertyAgeData] = useState<any>("");
+  const [getBHKData, setShowBHKData] = useState<any>("N/A");
+  const [getFacingData, setShowFacingData] = useState<any>("N/A");
+  const [getPropertyAgeData, setShowFPropertyAgeData] = useState<any>("N/A");
   const [getAvalibleFrom, setShowAvalibleFromData] = useState<any>("");
   const [getFloor, setShowFloorData] = useState<any>("");
   const [getTotalFloor, setShowTotalFloorData] = useState<any>("");
   const [getPrices, setPricesData] = useState<any>("");
   const [getMaintenance, setMaintenanceData] = useState<any>("");
-  const [getPricesnegotiable, setPricesnegotiableData] = useState<any>("");
-  const [getFurnishing, setFurnishingeData] = useState<any>("");
-  const [getParking, setParkingData] = useState<any>("");
+  const [getPricesnegotiable, setPricesnegotiableData] = useState<any>("N/A");
+  const [getFurnishing, setFurnishingeData] = useState<any>("N/A");
+  const [getParking, setParkingData] = useState<any>("N/A");
   const [getDescription, setDescriptionData] = useState<any>("");
-  const [getWater, setWaterData] = useState<any>("");
-  const [getPower, setPowerData] = useState<any>("");
-  const [getSecurity, setSecurityData] = useState<any>("");
+  const [getWater, setWaterData] = useState<any>("N/A");
+  const [getPower, setPowerData] = useState<any>("N/A");
+  const [getSecurity, setSecurityData] = useState<any>("N/A");
   const [getClubhouse, setClubhouseData] = useState<any>("N/A");
   const [getGym, setGymData] = useState<any>("N/A");
   const [getplayground, setplaygroundData] = useState<any>("N/A");
@@ -95,8 +88,17 @@ export default function Index(props:any) {
   const [getVisitorsParking, setVisitorsParkingData] = useState<any>("N/A");
   const [getAddressData, setAddressData] = useState<any>("");
   const [getContentData, setContentData] = useState<any>("");
-
-  const [getUniqueid, setUniqueId] = useState<any>("")
+  const [getUniqueid, setUniqueId] = useState<any>("N/A");
+  const [getcityData, setCityData] = useState<any>("");
+  const [getLocalityData, setLocalityData] = useState<any>("");
+  const [getKathaData, setKathaData] = useState<any>("N/A");
+  const [getSaleSeedData, setSaleSeedData] = useState<any>("N/A");
+  const [getPropertyTaxData, setPropertyTaxData] = useState<any>("N/A");
+  const [getOccupancyCertificateData, setOccupancyCertificateData] =
+    useState<any>("N/A");
+  const [getOwerShowData, setOwerShowData] = useState<any>("N/A");
+  const [getOwnerAvalibilityData, setOwnerAvalibilityData] =
+    useState<any>("N/A");
 
   const navigate = useNavigate();
 
@@ -127,60 +129,62 @@ export default function Index(props:any) {
   }
 
   const handleUpload = () => {
-    if (user === null){
-      navigate("/")
-    }
-    else{
-      const uid = user.uid;
-    
-    if (ImageFile.length == 0) {
-      // alert("Please upload an image first!");
-
-      setShowAnimation(false);
-      setTimeout(() => {
-        setGetImageContainer(false);
-        setGetApartmentType(true);
-        setShowAnimation(true);
-      }, 400);
+    if (user === null) {
+      navigate("/");
     } else {
-      setFile(ImageFile);
-      ImageFile.forEach((element: any) => {
-        const storageRef = ref(storage, `${uid}/${element.name}`);
-        const uploadTask = uploadBytesResumable(storageRef, element);
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            setPercent((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-            setShowAnimation(false);
-            setTimeout(() => {
-              setGetImageContainer(false);
-              setGetApartmentType(true);
-              setShowAnimation(true);
-              setUniqueId("id" + Math.random().toString(36).slice(2));
-            }, 400);
+      const uid = user.uid;
 
-            switch (snapshot.state) {
-              case "paused":
-                console.log("Upload is paused");
-                break;
-              case "running":
-                console.log("Upload is running");
-                break;
+      if (ImageFile.length == 0) {
+        // alert("Please upload an image first!");
+
+        setShowAnimation(false);
+        setTimeout(() => {
+          setShowLocationSlide(false);
+          setGetImageContainer(false);
+          setShowAdditionInfoSlide(true);
+          setShowAnimation(true);
+        }, 400);
+      } else {
+        setFile(ImageFile);
+        ImageFile.forEach((element: any) => {
+          const storageRef = ref(storage, `${uid}/${element.name}`);
+          const uploadTask = uploadBytesResumable(storageRef, element);
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              setPercent(
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+              );
+              setShowAnimation(false);
+              setTimeout(() => {
+                setGetImageContainer(false);
+                setShowAdditionInfoSlide(true);
+                setShowAnimation(true);
+                setUniqueId("id" + Math.random().toString(36).slice(2));
+              }, 400);
+
+              switch (snapshot.state) {
+                case "paused":
+                  console.log("Upload is paused");
+                  break;
+                case "running":
+                  console.log("Upload is running");
+                  break;
+              }
+            },
+            (error) => {
+              console.log(error);
+            },
+            () => {
+              getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                let index = ImageFile.indexOf(element);
+                ImageFile[index] = downloadURL;
+              });
             }
-          },
-          (error) => {
-            console.log(error);
-          },
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              let index = ImageFile.indexOf(element);
-              ImageFile[index] = downloadURL;
-            });
-          }
-        );
-      });
+          );
+        });
+      }
     }
-  }
     setFile(ImageFile);
   };
 
@@ -188,9 +192,8 @@ export default function Index(props:any) {
     try {
       const db = getFirestore(App);
       const uid = user.uid;
-
       try {
-        const docRef = await addDoc(collection(db, props.TypeOfProperty), {
+        const docRef = await addDoc(collection(db, "PropertyData"), {
           uid: uid,
           images: {
             img1: File[0],
@@ -199,186 +202,117 @@ export default function Index(props:any) {
             img4: File[3],
             img5: File[4],
           },
-          ApartmentType: getApartmentTypeData,
+          ApartmentType: getApartmentTypeData.value,
           PropertyName: getPropertyNameData,
           BuildUpArea: getBuildUpAreaData,
           CarpetArea: getCarpetAreaData,
-          BHK: getBHKData,
-          Facing: getFacingData,
-          PropertyAge: getPropertyAgeData,
+          BHK: getBHKData.value,
+          Facing: getFacingData.value,
+          PropertyAge: getPropertyAgeData.value,
           AvalibleData: getAvalibleFrom,
           Floor: getFloor,
           TotalFloor: getTotalFloor,
-          Prices : getPrices,
-          MaintenanceCost : getMaintenance,
-          Negotiable : getPricesnegotiable,
-          Furnishing : getFurnishing,
-          Parking : getParking,
-          Description : getDescription,
-          WaterSupply : getWater,
-          Power : getPower,
-          Security : getSecurity,
-          uniqueId : getUniqueid,
-          Address : getAddressData,
-          ContactNumber : getContentData,
-          Amenities : {
-            ClubHouse : getClubhouse,
-            Gym : getGym,
-            PlayGround : getplayground,
-            Gas : getGas,
-            OpenGym : getOpenGym,
-            Lift : getLift,
-            SewageSystem : getSewageSystem,
-            FireAlarm : getFireAlarm,
-            Park : getPark,
-            ShoppingCentre : getShoppingCentre,
-            InterCom : getInterCom,
-            SwimmingPool : getSwimmingPool,
-            VisitorsParking : getVisitorsParking,
-          }
+          Prices: getPrices,
+          MaintenanceCost: getMaintenance,
+          Negotiable: getPricesnegotiable.value,
+          Furnishing: getFurnishing.value,
+          Parking: getParking.value,
+          Description: getDescription,
+          WaterSupply: getWater.value,
+          Power: getPower.value,
+          Security: getSecurity.value,
+          uniqueId: getUniqueid,
+          City: getcityData,
+          Locality: getLocalityData,
+          Address: getAddressData,
+          ContactNumber: getContentData,
+          KhataType: getKathaData.value,
+          SaleSeed: getSaleSeedData.value,
+          PropertyTax: getPropertyTaxData.value,
+          OccupancyCertificate: getOccupancyCertificateData.value,
+          OwerShow: getOwerShowData.value,
+          OwnerAvalibility: getOwnerAvalibilityData.value,
+          Amenities: {
+            ClubHouse: getClubhouse,
+            Gym: getGym,
+            PlayGround: getplayground,
+            Gas: getGas,
+            OpenGym: getOpenGym,
+            Lift: getLift,
+            SewageSystem: getSewageSystem,
+            FireAlarm: getFireAlarm,
+            Park: getPark,
+            ShoppingCentre: getShoppingCentre,
+            InterCom: getInterCom,
+            SwimmingPool: getSwimmingPool,
+            VisitorsParking: getVisitorsParking,
+          },
         });
         alert("Upload Successful  id : " + docRef.id);
-        navigate("/DisplayProperty")
+        navigate("/DisplayProperty");
       } catch (e) {
         console.error("Error adding document: ", e);
-        navigate("/DisplayProperty")
+        navigate("/DisplayProperty");
       }
     } catch (e) {
       console.error("Error adding document: ", e);
-      navigate("/DisplayProperty")
+      navigate("/DisplayProperty");
     }
   };
 
-  const handleApartmentType = () => {
-    setShowAnimation(false);
-    setTimeout(() => {
-      setGetApartmentType(false);
-      setShowProjectName(true);
-      setShowAnimation(true);
-    }, 400);
-  };
-
-  const handleApartmentName = () => {
-    setShowAnimation(false);
-    setTimeout(() => {
-      setShowProjectName(false);
-      setShowBHK(true);
-      setShowAnimation(true);
-    }, 400);
-  };
-
-  const handleSubmitBHK = () => {
-    setShowAnimation(false);
-    setTimeout(() => {
-      setShowFacing(true);
-      setShowBHK(false);
-      setShowAnimation(true);
-    }, 400);
-  };
-
-  const handleSubmitFacing = () => {
-    setShowAnimation(false);
-    setTimeout(() => {
-      setShowFacing(false);
-      setShowFPropertyAge(true);
-      setShowAnimation(true);
-    }, 400);
-  };
-
-  const handleSubmitProperty = () => {
-    setShowAnimation(false);
-    setTimeout(() => {
-      setShowFloor(true);
-      setShowFPropertyAge(false);
-      setShowAnimation(true);
-    }, 400);
-  };
-
-  const handleAvaliableBtn = () => {
-    setShowAnimation(false);
-    setTimeout(() => {
-      setShowFloor(false);
-      setShowPrices(true);
-      setShowAnimation(true);
-    }, 400);
-  };
-
-  const handlePricing = () => {
-    setShowAnimation(false);
-    setTimeout(() => {
-      setShowPrices(false);
-      setShowFurnishing(true);
-      setShowAnimation(true);
-    }, 400);
-  };
-
-  const handleFurnished = () => {
-    setShowAnimation(false);
-    setTimeout(() => {
-      setShowFurnishing(false);
-      setShowParking(true);
-      setShowAnimation(true);
-    }, 400);
-  };
-
-  const handleParking = () => {
-    setShowAnimation(false);
-    setTimeout(() => {
-      setShowParking(false);
-      setShowWater(true);
-      setShowAnimation(true);
-    }, 400);
-  };
-
-  const handleWaterSupply = () => {
-    setShowAnimation(false);
-    setTimeout(() => {
-      setShowWater(false);
-      setshowPowerSupply(true);
-      setShowAnimation(true);
-    }, 400);
-  };
-
-  const handlePowerSupply = () => {
-    setShowAnimation(false);
-    setTimeout(() => {
-      setshowPowerSupply(false);
-      setShowSecurity(true);
-      setShowAnimation(true);
-    }, 400);
-  };
-
-  const handleSecurity = () => {
-    if (getApartmentTypeData === "Stand Alone Building"){
+  const HandlePropertyDetailsSlide = () => {
       setShowAnimation(false);
     setTimeout(() => {
-      setShowSecurity(false);
-      setShowDescription(true)
+      setShowPropertyDetailsSlide(false);
+      setShowSaleDetailsSlide(true);
       setShowAnimation(true);
     }, 400);
-    } else {
-      setShowAnimation(false);
-      setTimeout(() => {
-        setShowSecurity(false);
-        setShowamenities(true);
-        setShowAnimation(true);
-      }, 400);
-    }
   };
 
-  const handleAmenities = () => {
+  const handleSalesDetailsSlide = () => {
     setShowAnimation(false);
     setTimeout(() => {
-      setShowamenities(false);
-      setShowDescription(true);
+      setShowAmenitiesSlide(true);
+      setShowSaleDetailsSlide(false);
       setShowAnimation(true);
     }, 400);
   };
 
-  const handleApartmentTypeData = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setGetApartmentTypeData(event.target.value);
+  const HandleAmenitiesSlide = () => {
+    setShowAnimation(false);
+    setTimeout(() => {
+      setShowAmenitiesSlide(false);
+      setShowLocationSlide(true);
+      setShowAnimation(true);
+    }, 400);
+  };
+
+  const handleLocationDetailsSlide = () => {
+    setShowAnimation(false);
+    setTimeout(() => {
+      setShowLocationSlide(false);
+      setGetImageContainer(true);
+      setShowAnimation(true);
+    }, 400);
+  };
+
+  const handleAdditionalInfoSlide = () => {
+    setShowAnimation(false);
+    setTimeout(() => {
+      setGetImageContainer(false);
+      setShowAdditionInfoSlide(false);
+      setShowYourAvailabilitySlide(true);
+      setShowAnimation(true);
+    }, 400);
+  };
+
+  const HandelOwnerAvalibitilySlide = () => {
+    setShowAnimation(false);
+    setTimeout(() => {
+      setShowYourAvailabilitySlide(false);
+      HandelSubmitBtn();
+      setShowAnimation(true);
+    }, 400);
   };
 
   const handlePropertyName = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -391,20 +325,6 @@ export default function Index(props:any) {
 
   const handleCarpetArea = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCarpetAreaData(event.target.value);
-  };
-
-  const handleBHKData = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setShowBHKData(event.target.value);
-  };
-
-  const handleFacingData = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setShowFacingData(event.target.value);
-  };
-
-  const handlePropertyAgeData = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setShowFPropertyAgeData(event.target.value);
   };
 
   const handleAvalibleFromData = (
@@ -429,32 +349,8 @@ export default function Index(props:any) {
     setPricesData(event.target.value);
   };
 
-  const HandleNegotiable = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPricesnegotiableData(event.target.value);
-  };
-
   const HandleMaintenance = (event: React.ChangeEvent<HTMLInputElement>) => {
     setMaintenanceData(event.target.value);
-  };
-
-  const HnadleFurnished = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFurnishingeData(event.target.value);
-  };
-
-  const HandleParking = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setParkingData(event.target.value);
-  };
-
-  const HandelWater = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setWaterData(event.target.value);
-  };
-
-  const HandlePower = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPowerData(event.target.value);
-  };
-
-  const HandleSecurity = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSecurityData(event.target.value);
   };
 
   const HandleClubHouse = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -510,21 +406,603 @@ export default function Index(props:any) {
   };
 
   const HandelAddress = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAddressData(event.target.value)
-  }
+    setAddressData(event.target.value);
+  };
 
   const handleContantData = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setContentData(event.target.value)
-  }
+    setContentData(event.target.value);
+  };
+
+  const HandleCity = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCityData(event.target.value);
+  };
+
+  const HandelLocality = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalityData(event.target.value);
+  };
+
+  const ApartmentType = [
+    { value: "Flats", label: "Flats" },
+    { value: "Gated community Villa", label: "Gated community Villa" },
+    { value: "Independent Houses/Villa", label: "Independent Houses/Villa" },
+    { value: "Stand Alone Building", label: "Stand Alone Building" },
+  ];
+
+  const BHKType = [
+    { value: "1 BHK", label: "1 BHK" },
+    { value: "2 BHK", label: "2 BHK" },
+    { value: "3 BHK", label: "3 BHK" },
+    { value: "4 BHK", label: "4 BHK" },
+    { value: "4 BHK Plus", label: "4 BHK Plus" },
+  ];
+
+  const FacingDirection = [
+    { value: "North", label: "North" },
+    { value: "East", label: "East" },
+    { value: "West", label: "West" },
+    { value: "South", label: "South" },
+    { value: "North-East", label: "North-East" },
+    { value: "North-West", label: "North-West" },
+    { value: "South-West", label: "South-West" },
+    { value: "South-East", label: "South-East" },
+    { value: "I Don't Facing", label: "I Don't Facing" },
+  ];
+
+  const PropertyAge = [
+    { value: "Under Construction", label: "Under Construction" },
+    { value: "Less than a year", label: "Less than a year" },
+    { value: "1-3 years", label: "1-3 years" },
+    { value: "3-6 years", label: "3-6 years" },
+    { value: "7-10 years", label: "7-10 years" },
+    { value: "More than 10 years", label: "More than 10 years" },
+  ];
+
+  const Negotiable = [
+    { value: "Negotiable", label: "Negotiable" },
+    { value: "Not", label: "Not" },
+  ];
+
+  const FurnishingType = [
+    { value: "Unfurnished", label: "Unfurnished" },
+    { value: "Semi-furnished", label: "Semi-furnished" },
+    { value: "Fully furnished", label: "Fully furnished" },
+  ];
+
+  const ParkingType = [
+    { value: "Open car parking", label: "Open car parking" },
+    { value: "Covered car parking", label: "Covered car parking" },
+    { value: "No car parking", label: "No car parking" },
+  ];
+
+  const WaterSupply = [
+    { value: "Borewell", label: "Borewell" },
+    { value: "Cooperation", label: "Cooperation" },
+    {
+      value: "Both Borewell and Cooperation",
+      label: "Both Borewell and Cooperation",
+    },
+  ];
+
+  const PowerSupply = [
+    { value: "Partially", label: "Partially" },
+    { value: "Full", label: "Full" },
+    { value: "None", label: "None" },
+  ];
+
+  const Security = [
+    { value: "CCTV", label: "CCTV" },
+    { value: "Guards", label: "Guards" },
+    { value: "Both CCTV & Guards", label: "Both CCTV & Guards" },
+    { value: "None", label: "None" },
+  ];
+
+  const KhataType = [
+    { value: "A Khata", label: "A Khata" },
+    { value: "B Khata", label: "B Khata" },
+    { value: "E Khata", label: "E Khata" },
+    { value: "Punchayat khata", label: "Punchayat khata" },
+    { value: "DC conversion", label: "DC conversion" },
+  ];
+
+  const SeedType = [
+    { value: "Yes", label: "Yes" },
+    { value: "No", label: "No" },
+  ];
+
+  const PropertyTaxType = [
+    { value: "Upto data", label: "Upto data" },
+    { value: "No", label: "No" },
+  ];
+
+  const OwnerShowType = [
+    { value: "I will show the property", label: "I will show the property" },
+    { value: "I Want Taj staff to show", label: "I Want Taj staff to show" },
+  ];
+
+  const OwnerAvalibilyType = [
+    { value: "Everyday (mon-sun)", label: "Everyday (mon-sun)" },
+    { value: "Weekdays (mon-fri)", label: "Weekdays (mon-fri)" },
+    {
+      value: "Weekends (Saturday-sunday)",
+      label: "Weekends (Saturday-sunday)",
+    },
+  ];
 
   return (
     <BaseContainer>
-    
+      {showPropertyDetailsSlide && (
+        <CardContainer marginTop="3em" AnimationStart={showAnimation}>
+          <CardColContainer>
+            <LabelContainer> Property Type* </LabelContainer>
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "5px",
+                  width: "20em",
+                }),
+              }}
+              defaultValue={getApartmentTypeData}
+              onChange={setGetApartmentTypeData}
+              options={ApartmentType}
+              placeholder="ApartmentType"
+              isSearchable
+            />
+
+            <LabelContainer> Apartment Society / Project Name* </LabelContainer>
+            <InputNameContainer
+              type="text"
+              placeholder='eg : "LG"'
+              onChange={handlePropertyName}
+            />
+
+            <LabelContainer> BHK Type* </LabelContainer>
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "5px",
+                  width: "20em",
+                }),
+              }}
+              defaultValue={getBHKData}
+              onChange={setShowBHKData}
+              options={BHKType}
+              placeholder="BHK Type"
+              isSearchable
+            />
+
+            <LabelContainer> Super Built up area* </LabelContainer>
+            <InputNameContainer
+              type="text"
+              placeholder='eg : "1200 sqft"'
+              onChange={handleBuildUpArea}
+            />
+
+            <LabelContainer> Carpet area* </LabelContainer>
+            <InputNameContainer
+              type="text"
+              placeholder='eg : "7000 sqft"'
+              onChange={handleCarpetArea}
+            />
+          </CardColContainer>
+          <CardColContainer>
+            <LabelContainer> Facing* </LabelContainer>
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "5px",
+                  width: "20em",
+                }),
+              }}
+              defaultValue={getFacingData}
+              onChange={setShowFacingData}
+              options={FacingDirection}
+              placeholder="Facing Direction"
+              isSearchable
+            />
+
+            <LabelContainer> Property Age* </LabelContainer>
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "5px",
+                  width: "20em",
+                }),
+              }}
+              defaultValue={getPropertyAgeData}
+              onChange={setShowFPropertyAgeData}
+              options={PropertyAge}
+              placeholder="Property Age"
+              isSearchable
+            />
+
+            <LabelContainer> Floor* </LabelContainer>
+            <InputNameContainer
+              type="text"
+              placeholder='eg : "5th"'
+              onChange={handleFloorData}
+            />
+
+            <LabelContainer> Total Floor* </LabelContainer>
+            <InputNameContainer
+              type="text"
+              placeholder='eg : "10"'
+              onChange={handleTotalFloorData}
+            />
+
+            <LabelContainer> Available from : </LabelContainer>
+            <InputNameContainer
+              type="date"
+              placeholder='eg : "Godrej"'
+              onChange={handleAvalibleFromData}
+            />
+          </CardColContainer>
+
+          { 
+          getApartmentTypeData.value !== "N/A" && 
+          getBHKData.value !== "N/A"  && 
+          getPropertyAgeData.value!== "N/A" && 
+          getFacingData.value !== "N/A"  && 
+          (getAvalibleFrom !== "") &&
+          (getTotalFloor !== "") &&
+          (getFloor !== "") &&
+          (getCarpetAreaData !== "") &&
+          (getBuildUpAreaData !== "") &&
+
+          <BtnBaseContainer>
+            <SubmitButton onClick={HandlePropertyDetailsSlide}>
+              {" "}
+              Next &gt;
+            </SubmitButton>
+          </BtnBaseContainer>
+          }
+        </CardContainer>
+      )}
+
+      {showSaleDetailsSlide && (
+        <CardContainer marginTop="3em" AnimationStart={showAnimation}>
+          <CardColContainer>
+            <LabelContainer> Expected price : </LabelContainer>
+            <InputNameContainer
+              type="text"
+              placeholder='eg : "87 lacks"'
+              onChange={HandlePrices}
+            />
+
+            <LabelContainer> Monthly Maintenance : </LabelContainer>
+            <InputNameContainer
+              type="text"
+              placeholder='eg : "2k"'
+              onChange={HandleMaintenance}
+            />
+
+            <LabelContainer> Furnishing* </LabelContainer>
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "5px",
+                  width: "20em",
+                }),
+              }}
+              defaultValue={getFurnishing}
+              onChange={setFurnishingeData}
+              options={FurnishingType}
+              placeholder="Furnishing Type"
+              isSearchable
+            />
+
+            <LabelContainer> Parking* </LabelContainer>
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "5px",
+                  width: "20em",
+                }),
+              }}
+              defaultValue={getParking}
+              onChange={setParkingData}
+              options={ParkingType}
+              placeholder="Parking Type"
+              isSearchable
+            />
+          </CardColContainer>
+          <CardColContainer>
+            <LabelContainer> Negotiable / Not* </LabelContainer>
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "5px",
+                  width: "20em",
+                }),
+              }}
+              defaultValue={getPricesnegotiable}
+              onChange={setPricesnegotiableData}
+              options={Negotiable}
+              placeholder="Negotiable/Not"
+            />
+
+            <LabelContainer> Property Description* </LabelContainer>
+            <InputReviewContainer
+              onChange={(e: any) => HandelReview(e)}
+              placeholder="Write the about the project / property"
+            />
+          </CardColContainer>
+
+          <BtnBaseContainer>
+            <SubmitButton onClick={handleSalesDetailsSlide}>
+              {" "}
+              Next &gt;
+            </SubmitButton>
+          </BtnBaseContainer>
+        </CardContainer>
+      )}
+
+      {showAmenitiesSlide && (
+        <CardContainer marginTop="2em" AnimationStart={showAnimation}>
+          <CardColContainer>
+            <LabelContainer> Water Supply* </LabelContainer>
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "5px",
+                  width: "20em",
+                }),
+              }}
+              defaultValue={getWater}
+              onChange={setWaterData}
+              options={WaterSupply}
+              placeholder="water supply"
+              isSearchable
+            />
+
+            <LabelContainer> Power Supply* </LabelContainer>
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "5px",
+                  width: "20em",
+                }),
+              }}
+              defaultValue={getPower}
+              onChange={setPowerData}
+              options={PowerSupply}
+              placeholder="Power supply"
+              isSearchable
+            />
+
+            <LabelContainer> Amenities* </LabelContainer>
+
+            <CheckBoxContainer>
+              <InputCheckContainer
+                type="checkbox"
+                value=" Club house"
+                onChange={HandleClubHouse}
+              />
+              <LabelContainerForCheckBox>
+                {" "}
+                Club house{" "}
+              </LabelContainerForCheckBox>
+            </CheckBoxContainer>
+
+            <CheckBoxContainer>
+              <InputCheckContainer
+                type="checkbox"
+                name="ApartmentType"
+                value="Gym"
+                onChange={HandleGym}
+              />
+              <LabelContainerForCheckBox> Gym </LabelContainerForCheckBox>
+            </CheckBoxContainer>
+
+            <CheckBoxContainer>
+              <InputCheckContainer
+                type="checkbox"
+                name="ApartmentType"
+                value="playground"
+                onChange={HandlePlayground}
+              />
+              <LabelContainerForCheckBox>
+                {" "}
+                playground{" "}
+              </LabelContainerForCheckBox>
+            </CheckBoxContainer>
+
+            <CheckBoxContainer>
+              <InputCheckContainer
+                type="checkbox"
+                name="ApartmentType"
+                value="Gas"
+                onChange={HandleGas}
+              />
+              <LabelContainerForCheckBox> Gas </LabelContainerForCheckBox>
+            </CheckBoxContainer>
+
+            <CheckBoxContainer>
+              <InputCheckContainer
+                type="checkbox"
+                name="ApartmentType"
+                value="park"
+                onChange={HandlePark}
+              />
+              <LabelContainerForCheckBox> park </LabelContainerForCheckBox>
+            </CheckBoxContainer>
+
+            <CheckBoxContainer>
+              <InputCheckContainer
+                type="checkbox"
+                name="ApartmentType"
+                value="Shopping centre"
+                onChange={HandleShopping}
+              />
+              <LabelContainerForCheckBox>
+                {" "}
+                shopping centre{" "}
+              </LabelContainerForCheckBox>
+            </CheckBoxContainer>
+          </CardColContainer>
+          <CardColContainer>
+            <LabelContainer> Security* </LabelContainer>
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "5px",
+                  width: "20em",
+                }),
+              }}
+              defaultValue={getSecurity}
+              onChange={setSecurityData}
+              options={Security}
+              placeholder="Security"
+              isSearchable
+            />
+
+            <CheckBoxContainer>
+              <InputCheckContainer
+                type="checkbox"
+                name="ApartmentType"
+                value="open gym "
+                onChange={HandleOpenGym}
+              />
+              <LabelContainerForCheckBox> open gym </LabelContainerForCheckBox>
+            </CheckBoxContainer>
+
+            <CheckBoxContainer>
+              <InputCheckContainer
+                type="checkbox"
+                name="ApartmentType"
+                value="Lift"
+                onChange={HandkeLift}
+              />
+              <LabelContainerForCheckBox> Lift </LabelContainerForCheckBox>
+            </CheckBoxContainer>
+
+            <CheckBoxContainer>
+              <InputCheckContainer
+                type="checkbox"
+                name="ApartmentType"
+                value="sewage system "
+                onChange={HandleSewage}
+              />
+              <LabelContainerForCheckBox>
+                sewage system{" "}
+              </LabelContainerForCheckBox>
+            </CheckBoxContainer>
+
+            <CheckBoxContainer>
+              <InputCheckContainer
+                type="checkbox"
+                name="ApartmentType"
+                value="fire alarm "
+                onChange={HandleFireAlarm}
+              />
+              <LabelContainerForCheckBox>
+                {" "}
+                fire alarm{" "}
+              </LabelContainerForCheckBox>
+            </CheckBoxContainer>
+
+            <CheckBoxContainer>
+              <InputCheckContainer
+                type="checkbox"
+                name="ApartmentType"
+                value="inter com "
+                onChange={HandleInterCom}
+              />
+              <LabelContainerForCheckBox> inter com </LabelContainerForCheckBox>
+            </CheckBoxContainer>
+
+            <CheckBoxContainer>
+              <InputCheckContainer
+                type="checkbox"
+                name="ApartmentType"
+                value="swimming pool"
+                onChange={HandleSwimming}
+              />
+              <LabelContainerForCheckBox>
+                {" "}
+                swimming pool{" "}
+              </LabelContainerForCheckBox>
+            </CheckBoxContainer>
+
+            <CheckBoxContainer>
+              <InputCheckContainer
+                type="checkbox"
+                name="ApartmentType"
+                value="visitors parking"
+                onChange={HandleVisitor}
+              />
+              <LabelContainerForCheckBox>
+                {" "}
+                visitors parking{" "}
+              </LabelContainerForCheckBox>
+            </CheckBoxContainer>
+            <BtnBaseContainer>
+              <SubmitButton marginTop="2em" onClick={HandleAmenitiesSlide}>
+                {" "}
+                Next &gt;
+              </SubmitButton>
+            </BtnBaseContainer>
+          </CardColContainer>
+        </CardContainer>
+      )}
+
+      {showLocationSlide && (
+        <CardContainer AnimationStart={showAnimation}>
+          <CardColContainer>
+            <LabelContainer> City* </LabelContainer>
+            <InputNameContainer
+              type="text"
+              placeholder='eg : "Bangalore"'
+              onChange={HandleCity}
+            />
+
+            <LabelContainer> Locality* </LabelContainer>
+            <InputNameContainer
+              type="text"
+              placeholder='eg : "India"'
+              onChange={HandelLocality}
+            />
+
+            <LabelContainer> Landmark/street* </LabelContainer>
+            <InputNameContainer
+              type="text"
+              placeholder='eg : "#44 Cube square homes"'
+              onChange={(e: any) => HandelAddress(e)}
+            />
+
+            <LabelContainer> Contact Number* </LabelContainer>
+            <InputNameContainer
+              type="text"
+              placeholder="Enter the Contact Number"
+              onChange={handleContantData}
+            />
+          </CardColContainer>
+          <BtnBaseContainer>
+            <SubmitButton onClick={handleLocationDetailsSlide}>
+              {" "}
+              Next &gt;
+            </SubmitButton>
+          </BtnBaseContainer>
+        </CardContainer>
+      )}
+
       {getImageContainer && (
         <CardContainer AnimationStart={showAnimation}>
           <CardColContainer>
-          <LabelContainerOnImages> Please upload Property Images </LabelContainerOnImages>
-            {/* {percent} */}
+            <LabelContainerOnImages>
+              {" "}
+              Please upload Property Images{" "}
+            </LabelContainerOnImages>
+            {percent}
             <InputImageContainer
               type="file"
               accept="/image/*"
@@ -556,818 +1034,135 @@ export default function Index(props:any) {
               multiple
             />
           </CardColContainer>
-            <BtnBaseContainer>
-              <SubmitButton onClick={handleUpload}> Next &gt;</SubmitButton>
-            </BtnBaseContainer>
+          <BtnBaseContainer>
+            <SubmitButton onClick={handleUpload}> Next &gt;</SubmitButton>
+          </BtnBaseContainer>
         </CardContainer>
       )}
 
-      {getApartmentType && (
+      {showAdditionInfoSlide && (
         <CardContainer AnimationStart={showAnimation}>
-          <CardCheckBoxContainer>
-           <LabelContainerOnImages> Please select Property Type </LabelContainerOnImages>
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="ApartmentType"
-                value="Flats"
-                onChange={handleApartmentTypeData}
-              />
-              <LabelContainer> Flats </LabelContainer>
-            </CheckBoxContainer>
-
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="ApartmentType"
-                value="Gated Community Villa"
-                onChange={handleApartmentTypeData}
-              />
-              <LabelContainer> Gated community Villa </LabelContainer>
-            </CheckBoxContainer>
-
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="ApartmentType"
-                value="Independent Houses Villa"
-                onChange={handleApartmentTypeData}
-              />
-              <LabelContainer> Independent Houses/Villa </LabelContainer>
-            </CheckBoxContainer>
-
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="ApartmentType"
-                value="Stand Alone Building"
-                onChange={handleApartmentTypeData}
-              />
-              <LabelContainer> Stand Alone Building </LabelContainer>
-            </CheckBoxContainer>
-
-          </CardCheckBoxContainer>
-            <BtnBaseContainer>
-              <SubmitButton onClick={handleApartmentType}> Next &gt;</SubmitButton>
-            </BtnBaseContainer>
-        </CardContainer>
-      )}
-
-      {showProjectName && (
-        <CardContainer AnimationStart={showAnimation}>
-          <CardCheckBoxContainer>
-          <LabelContainerOnImages> Please Enter Property Name and sqrt </LabelContainerOnImages>
-            <LabelContainer> Name of the Property : </LabelContainer>
-            <InputNameContainer
-              type="text"
-              placeholder='eg : "Godrej"'
-              onChange={handlePropertyName}
-            />
-            <LabelContainer> Super Built up Area : </LabelContainer>
-            <InputNameContainer
-              type="text"
-              placeholder='eg : "1000 sqft"'
-              onChange={handleBuildUpArea}
-            />
-            <LabelContainer> Carpet Area : </LabelContainer>
-            <InputNameContainer
-              type="text"
-              placeholder='eg : "7000 sqft"'
-              onChange={handleCarpetArea}
-            />
-          </CardCheckBoxContainer>
-            <BtnBaseContainer>
-              <SubmitButton onClick={handleApartmentName}>
-                Next &gt;
-              </SubmitButton>
-            </BtnBaseContainer>
-        </CardContainer>
-      )}
-
-      {showBHK && (
-        <CardContainer AnimationStart={showAnimation}>
-          <CardCheckBoxContainer>
-          <LabelContainerOnImages> Please Enter BHK </LabelContainerOnImages>
-        
-              <CheckBoxContainer>
-                <InputCheckContainer
-                  type="radio"
-                  name="ApartmentType"
-                  value="1 BHK"
-                  onChange={handleBHKData}
-                />
-                <LabelContainer> 1 BHK </LabelContainer>
-              </CheckBoxContainer>
-
-              <CheckBoxContainer>
-                <InputCheckContainer
-                  type="radio"
-                  name="ApartmentType"
-                  value="2 BHK"
-                  onChange={handleBHKData}
-                />
-                <LabelContainer> 2 BHK </LabelContainer>
-              </CheckBoxContainer>
-
-              <CheckBoxContainer>
-                <InputCheckContainer
-                  type="radio"
-                  name="ApartmentType"
-                  value="3 BHK"
-                  onChange={handleBHKData}
-                />
-                <LabelContainer> 3 BHK </LabelContainer>
-              </CheckBoxContainer>
-
-              <CheckBoxContainer>
-                <InputCheckContainer
-                  type="radio"
-                  name="ApartmentType"
-                  value="4 BHK"
-                  onChange={handleBHKData}
-                />
-                <LabelContainer> 4 BHK </LabelContainer>
-              </CheckBoxContainer>
-
-              <CheckBoxContainer>
-                <InputCheckContainer
-                  type="radio"
-                  name="ApartmentType"
-                  value="5 BHK"
-                  onChange={handleBHKData}
-                />
-                <LabelContainer> 4 BHK + </LabelContainer>
-              </CheckBoxContainer>
-          </CardCheckBoxContainer>
-            <BtnBaseContainer>
-              <SubmitButton onClick={handleSubmitBHK}> Next &gt;</SubmitButton>
-            </BtnBaseContainer>
-        </CardContainer>
-      )}
-
-      {showFacing && (
-        <CardContainer AnimationStart={showAnimation}>
-          <CardCheckBoxContainer>
-          <LabelContainerOnImages> Please Enter Property Facing </LabelContainerOnImages>
-            <CheckRowContainer>
-              <CardColumnContainerForFacing>
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="radio"
-                    name="ApartmentType"
-                    value="East"
-                    onChange={handleFacingData}
-                  />
-                  <LabelContainer> East </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="radio"
-                    name="ApartmentType"
-                    value="North"
-                    onChange={handleFacingData}
-                  />
-                  <LabelContainer> North </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="radio"
-                    name="ApartmentType"
-                    value="South"
-                    onChange={handleFacingData}
-                  />
-                  <LabelContainer> South </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="radio"
-                    name="ApartmentType"
-                    value="West"
-                    onChange={handleFacingData}
-                  />
-                  <LabelContainer> West </LabelContainer>
-                </CheckBoxContainer>
-              </CardColumnContainerForFacing>
-
-              <CardColumnContainerForFacing>
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="radio"
-                    name="ApartmentType"
-                    value="South-west"
-                    onChange={handleFacingData}
-                  />
-                  <LabelContainer> South-west </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="radio"
-                    name="ApartmentType"
-                    value="North-east"
-                    onChange={handleFacingData}
-                  />
-                  <LabelContainer> North-east </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="radio"
-                    name="ApartmentType"
-                    value="North-west"
-                    onChange={handleFacingData}
-                  />
-                  <LabelContainer> North-west </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="radio"
-                    name="ApartmentType"
-                    value="South-east"
-                    onChange={handleFacingData}
-                  />
-                  <LabelContainer> South-east </LabelContainer>
-                </CheckBoxContainer>
-              </CardColumnContainerForFacing>
-            </CheckRowContainer>
-
-          </CardCheckBoxContainer>
-            <BtnBaseContainer>
-              <SubmitButton onClick={handleSubmitFacing}>
-              Next &gt;
-              </SubmitButton>
-            </BtnBaseContainer>
-        </CardContainer>
-      )}
-
-      {showPropertyAge && (
-        <CardContainer marginTop="2em" AnimationStart={showAnimation}>
           <CardColContainer>
-          <LabelContainerOnImages> Please Enter Property Age </LabelContainerOnImages>
-            <CheckRowContainer>
-              <CardCheckBoxContainer>
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="radio"
-                    name="ApartmentType"
-                    value="Under construction"
-                    onChange={handlePropertyAgeData}
-                  />
-                  <LabelContainer> Under construction </LabelContainer>
-                </CheckBoxContainer>
+            <LabelContainer> khata Certificate type* </LabelContainer>
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "5px",
+                  width: "20em",
+                }),
+              }}
+              defaultValue={getKathaData}
+              onChange={setKathaData}
+              options={KhataType}
+              placeholder="Khata Type"
+              isSearchable
+            />
 
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="radio"
-                    name="ApartmentType"
-                    value="Less than a year"
-                    onChange={handlePropertyAgeData}
-                  />
-                  <LabelContainer> Less than a year </LabelContainer>
-                </CheckBoxContainer>
+            <LabelContainer> Sale Seed* </LabelContainer>
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "5px",
+                  width: "20em",
+                }),
+              }}
+              defaultValue={getSaleSeedData}
+              onChange={setSaleSeedData}
+              options={SeedType}
+              placeholder="Sale Seed"
+              isSearchable
+            />
 
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="radio"
-                    name="ApartmentType"
-                    value="1-3 years"
-                    onChange={handlePropertyAgeData}
-                  />
-                  <LabelContainer> 1-3 years </LabelContainer>
-                </CheckBoxContainer>
-              </CardCheckBoxContainer>
+            <LabelContainer> Property tax* </LabelContainer>
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "5px",
+                  width: "20em",
+                }),
+              }}
+              defaultValue={getPropertyTaxData}
+              onChange={setPropertyTaxData}
+              options={PropertyTaxType}
+              placeholder="Sale Seed"
+              isSearchable
+            />
 
-              <CardCheckBoxContainer>
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="radio"
-                    name="ApartmentType"
-                    value="3-6 years"
-                    onChange={handlePropertyAgeData}
-                  />
-                  <LabelContainer>3-6 years </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="radio"
-                    name="ApartmentType"
-                    value="7-10 years"
-                    onChange={handlePropertyAgeData}
-                  />
-                  <LabelContainer> 7-10 years </LabelContainer>
-                </CheckBoxContainer>
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="radio"
-                    name="ApartmentType"
-                    value="More than 10 years"
-                    onChange={handlePropertyAgeData}
-                  />
-                  <LabelContainer> More than 10 years </LabelContainer>
-                </CheckBoxContainer>
-              </CardCheckBoxContainer>
-            </CheckRowContainer>
-
+            <LabelContainer> Occupancy Certificate* </LabelContainer>
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "5px",
+                  width: "20em",
+                }),
+              }}
+              defaultValue={getOccupancyCertificateData}
+              onChange={setOccupancyCertificateData}
+              options={SeedType}
+              placeholder="occupancy certificate"
+              isSearchable
+            />
           </CardColContainer>
-            <BtnBaseContainer>
-              <SubmitButton onClick={handleSubmitProperty}>
+          <BtnBaseContainer>
+            <SubmitButton onClick={handleAdditionalInfoSlide}>
+              {" "}
               Next &gt;
-              </SubmitButton>
-            </BtnBaseContainer>
+            </SubmitButton>
+          </BtnBaseContainer>
         </CardContainer>
       )}
 
-      {showFloor && (
+      {showYourAvailabilitySlide && (
         <CardContainer AnimationStart={showAnimation}>
-          <CardCheckBoxContainer>
-          <LabelContainerOnImages> Please Enter Property Basic Info </LabelContainerOnImages>
-            <LabelContainer> Available from : </LabelContainer>
-            <InputNameContainer
-              type="date"
-              placeholder='eg : "Godrej"'
-              onChange={handleAvalibleFromData}
+          <CardColContainer>
+            <LabelContainer> Who will show the property* </LabelContainer>
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "5px",
+                  width: "20em",
+                }),
+              }}
+              defaultValue={getOwerShowData}
+              onChange={setOwerShowData}
+              options={OwnerShowType}
+              placeholder="Who will show the property"
+              isSearchable
             />
-            <LabelContainer> Floor : </LabelContainer>
-            <InputNameContainer
-              type="text"
-              placeholder='eg : "6th floor"'
-              onChange={handleFloorData}
-            />
-            <LabelContainer> Total floor : </LabelContainer>
-            <InputNameContainer
-              type="text"
-              placeholder='eg : "10 floors"'
-              onChange={handleTotalFloorData}
-            />
+            <br />
 
-            <LabelContainer> Number of Bedrooms : </LabelContainer>
-            <InputNameContainer
-              type="text"
-              placeholder='eg : "3 Bedrooms"'
-              onChange={handleTotalFloorData}
-            />
+            {getOwerShowData.value === "I will show the property" && (
+              <div>
+                <LabelContainer> Availability* </LabelContainer>
 
-            <LabelContainer> Number of Toilet : </LabelContainer>
-            <InputNameContainer
-              type="text"
-              placeholder='eg : "2 Toilet"'
-              onChange={handleTotalFloorData}
-            />
-            <LabelContainer> Number of Balconies : </LabelContainer>
-            <InputNameContainer
-              type="text"
-              placeholder='eg : "2 Balconies"'
-              onChange={handleTotalFloorData}
-            />
-          </CardCheckBoxContainer>
-            <BtnBaseContainer>
-              <SubmitButton onClick={handleAvaliableBtn}>  Next &gt; </SubmitButton>
-            </BtnBaseContainer>
-        </CardContainer>
-      )}
-
-      {showPrices && (
-        <CardContainer AnimationStart={showAnimation}>
-          <CardCheckBoxContainer>
-          <LabelContainerOnImages> Please Enter Property Pricing Info </LabelContainerOnImages>
-            <LabelContainer> Expected price : </LabelContainer>
-            <InputNameContainer
-              type="text"
-              placeholder='eg : "87 lacks"'
-              onChange={HandlePrices}
-            />
-            <PriceNegoContainer>
-              <RadioButtonForPrice>
-                <InputCheckContainer
-                  type="radio"
-                  name="Prices"
-                  value="negotiable"
-                  onChange={HandleNegotiable}
+                <Select
+                  styles={{
+                    control: (baseStyles) => ({
+                      ...baseStyles,
+                      padding: "5px",
+                      width: "20em",
+                    }),
+                  }}
+                  defaultValue={getOwnerAvalibilityData}
+                  onChange={setOwnerAvalibilityData}
+                  options={OwnerAvalibilyType}
+                  placeholder="Availability"
+                  isSearchable
                 />
-                <LabelContainer> Negotiable </LabelContainer>
-              </RadioButtonForPrice>
-              <RadioButtonForPrice>
-                <InputCheckContainer
-                  type="radio"
-                  name="Prices"
-                  value="Not"
-                  onChange={HandleNegotiable}
-                />
-                <LabelContainer> Not </LabelContainer>
-              </RadioButtonForPrice>
-            </PriceNegoContainer>
-            <LabelContainer> Monthly Maintenance : </LabelContainer>
-            <InputNameContainer
-              type="text"
-              placeholder='eg : "2k"'
-              onChange={HandleMaintenance}
-            />
-
-          </CardCheckBoxContainer>
-            <BtnBaseContainer>
-              <SubmitButton onClick={handlePricing}>  Next &gt; </SubmitButton>
-            </BtnBaseContainer>
-        </CardContainer>
-      )}
-
-      {showFurnishing && (
-        <CardContainer AnimationStart={showAnimation}>
-          <CardCheckBoxContainer>
-          <LabelContainerOnImages> Please Enter Furnished type </LabelContainerOnImages>
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="Furnished"
-                value="Unfurnished"
-                onChange={HnadleFurnished}
-              />
-              <LabelContainer> Unfurnished </LabelContainer>
-            </CheckBoxContainer>
-
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="Furnished"
-                value="Semi- furnished"
-                onChange={HnadleFurnished}
-              />
-              <LabelContainer> Semi- furnished </LabelContainer>
-            </CheckBoxContainer>
-
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="Furnished"
-                value="Fully furnished "
-                onChange={HnadleFurnished}
-              />
-              <LabelContainer> Fully furnished </LabelContainer>
-            </CheckBoxContainer>
-
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="Furnished"
-                value="N/A"
-                onChange={HnadleFurnished}
-              />
-              <LabelContainer> None </LabelContainer>
-            </CheckBoxContainer>
-
-          </CardCheckBoxContainer>
-            <BtnBaseContainer>
-              <SubmitButton onClick={handleFurnished}>  Next &gt;</SubmitButton>
-            </BtnBaseContainer>
-        </CardContainer>
-      )}
-
-      {showParking && (
-        <CardContainer AnimationStart={showAnimation}>
-          <CardCheckBoxContainer>
-          <LabelContainerOnImages> Please Enter Parking type </LabelContainerOnImages>
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="parking"
-                value="Open car parking"
-                onChange={HandleParking}
-              />
-              <LabelContainer> Open car parking</LabelContainer>
-            </CheckBoxContainer>
-
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="parking"
-                value="Covered car parking"
-                onChange={HandleParking}
-              />
-              <LabelContainer> Covered car parking </LabelContainer>
-            </CheckBoxContainer>
-
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="parking"
-                value="No car parking"
-                onChange={HandleParking}
-              />
-              <LabelContainer> No car parking </LabelContainer>
-            </CheckBoxContainer>
-
-          </CardCheckBoxContainer>
-            <BtnBaseContainer>
-              <SubmitButton onClick={handleParking}>  Next &gt;</SubmitButton>
-            </BtnBaseContainer>
-        </CardContainer>
-      )}
-
-      {showWater && (
-        <CardContainer AnimationStart={showAnimation}>
-          <CardCheckBoxContainer>
-          <LabelContainerOnImages> Please Enter Water Supply </LabelContainerOnImages>
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="Water"
-                value="Borewell"
-                onChange={HandelWater}
-              />
-              <LabelContainer>Borewell</LabelContainer>
-            </CheckBoxContainer>
-
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="Water"
-                value="Cooperation"
-                onChange={HandelWater}
-              />
-              <LabelContainer> Cooperation </LabelContainer>
-            </CheckBoxContainer>
-
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="Water"
-                value="Both Borewell and Co-operation"
-                onChange={HandelWater}
-              />
-              <LabelContainer>Both Borewell and Co-operation </LabelContainer>
-            </CheckBoxContainer>
-
-          </CardCheckBoxContainer>
-            <BtnBaseContainer>
-              <SubmitButton onClick={handleWaterSupply}> Next &gt;</SubmitButton>
-            </BtnBaseContainer>
-        </CardContainer>
-      )}
-
-      {showPowerSupply && (
-        <CardContainer AnimationStart={showAnimation}>
-          <CardCheckBoxContainer>
-          <LabelContainerOnImages> Please Enter Power Supply </LabelContainerOnImages>
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="Power"
-                value="Partially"
-                onChange={HandlePower}
-              />
-              <LabelContainer>Partially</LabelContainer>
-            </CheckBoxContainer>
-
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="Power"
-                value="Full"
-                onChange={HandlePower}
-              />
-              <LabelContainer> Full </LabelContainer>
-            </CheckBoxContainer>
-
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="Power"
-                value="None"
-                onChange={HandlePower}
-              />
-              <LabelContainer> None </LabelContainer>
-            </CheckBoxContainer>
-
-          </CardCheckBoxContainer>
-            <BtnBaseContainer>
-              <SubmitButton onClick={handlePowerSupply}> Next &gt;</SubmitButton>
-            </BtnBaseContainer>
-        </CardContainer>
-      )}
-
-      {showSecurity && (
-        <CardContainer AnimationStart={showAnimation}>
-          <CardCheckBoxContainer>
-          <LabelContainerOnImages> Please Enter Security type </LabelContainerOnImages>
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="Security"
-                value="CCTV"
-                onChange={HandleSecurity}
-              />
-              <LabelContainer>CCTV</LabelContainer>
-            </CheckBoxContainer>
-
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="Security"
-                value="Guards"
-                onChange={HandleSecurity}
-              />
-              <LabelContainer> Guards </LabelContainer>
-            </CheckBoxContainer>
-
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="Security"
-                value="Both CCTV & guards"
-                onChange={HandleSecurity}
-              />
-              <LabelContainer> Both CCTV & guards </LabelContainer>
-            </CheckBoxContainer>
-
-            <CheckBoxContainer>
-              <InputCheckContainer
-                type="radio"
-                name="Security"
-                value="none"
-                onChange={HandleSecurity}
-              />
-              <LabelContainer> none </LabelContainer>
-            </CheckBoxContainer>
-
-          </CardCheckBoxContainer>
-            <BtnBaseContainer>
-              <SubmitButton onClick={handleSecurity}>  Next &gt;</SubmitButton>
-            </BtnBaseContainer>
-        </CardContainer>
-      )}
-
-      {showamenities && (
-        <CardContainer marginTop="2em" AnimationStart={showAnimation}>
-          <CardCheckBoxContainer>
-          <LabelContainerOnImages> Please Enter other Amenities</LabelContainerOnImages>
-            <CheckRowContainer>
-              <CardCheckBoxContainer>
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="checkbox"
-                    value=" Club house"
-                    onChange={HandleClubHouse}
-                  />
-                  <LabelContainer> Club house </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="checkbox"
-                    name="ApartmentType"
-                    value="Gym"
-                    onChange={HandleGym}
-                  />
-                  <LabelContainer> Gym </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="checkbox"
-                    name="ApartmentType"
-                    value="playground"
-                    onChange={HandlePlayground}
-                  />
-                  <LabelContainer> playground </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="checkbox"
-                    name="ApartmentType"
-                    value="Gas"
-                    onChange={HandleGas}
-                  />
-                  <LabelContainer> Gas </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="checkbox"
-                    name="ApartmentType"
-                    value="park"
-                    onChange={HandlePark}
-                  />
-                  <LabelContainer> park </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="checkbox"
-                    name="ApartmentType"
-                    value="Shopping centre"
-                    onChange={HandleShopping}
-                  />
-                  <LabelContainer> shopping centre </LabelContainer>
-                </CheckBoxContainer>
-              </CardCheckBoxContainer>
-
-              <CardCheckBoxContainer>
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="checkbox"
-                    name="ApartmentType"
-                    value="open gym "
-                    onChange={HandleOpenGym}
-                  />
-                  <LabelContainer> open gym </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="checkbox"
-                    name="ApartmentType"
-                    value="Lift"
-                    onChange={HandkeLift}
-                  />
-                  <LabelContainer> Lift </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="checkbox"
-                    name="ApartmentType"
-                    value="sewage system "
-                    onChange={HandleSewage}
-                  />
-                  <LabelContainer>sewage system </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="checkbox"
-                    name="ApartmentType"
-                    value="fire alarm "
-                    onChange={HandleFireAlarm}
-                  />
-                  <LabelContainer> fire alarm </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="checkbox"
-                    name="ApartmentType"
-                    value="inter com "
-                    onChange={HandleInterCom}
-                  />
-                  <LabelContainer> inter com </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="checkbox"
-                    name="ApartmentType"
-                    value="swimming pool"
-                    onChange={HandleSwimming}
-                  />
-                  <LabelContainer> swimming pool </LabelContainer>
-                </CheckBoxContainer>
-
-                <CheckBoxContainer>
-                  <InputCheckContainer
-                    type="checkbox"
-                    name="ApartmentType"
-                    value="visitors parking"
-                    onChange={HandleVisitor}
-                  />
-                  <LabelContainer> visitors parking </LabelContainer>
-                </CheckBoxContainer>
-              </CardCheckBoxContainer>
-            </CheckRowContainer>
-
-          </CardCheckBoxContainer>
-            <BtnBaseContainer>
-              <SubmitButton onClick={handleAmenities}> Next &gt;</SubmitButton>
-            </BtnBaseContainer>
-        </CardContainer>
-      )}
-
-      {showDescription && (
-        <CardContainer AnimationStart={showAnimation}>
-          <CardCheckBoxContainer>
-          <LabelContainerOnImages> Please Enter Property Description</LabelContainerOnImages>
-            <InputNameContainer
-              type="text"
-              placeholder='Enter the Contact Number'
-              onChange={handleContantData}
-            />
-          <InputReviewContainer
-              onChange={(e: any) => HandelAddress(e)}
-              placeholder="Enter the Property Address here"
-            />
-            <InputReviewContainer
-              onChange={(e: any) => HandelReview(e)}
-              placeholder="Enter the Property Description here"
-            />
-
-          </CardCheckBoxContainer>
-            <BtnBaseContainer>
-              <SubmitButton onClick={HandelSubmitBtn}> Submit Data</SubmitButton>
-            </BtnBaseContainer>
+              </div>
+            )}
+          </CardColContainer>
+          <BtnBaseContainer>
+            <SubmitButton onClick={HandelOwnerAvalibitilySlide}>
+              {" "}
+              Next &gt;
+            </SubmitButton>
+          </BtnBaseContainer>
         </CardContainer>
       )}
     </BaseContainer>

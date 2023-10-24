@@ -9,13 +9,14 @@ import Index from './Components/PremBangProperty/Index';
 import DispalyData from './Components/PremBangProperty/DispalyData';
 import ComingSoonPage from './Components/ComingSoon/ComingSoonPage';
 import { useState } from 'react';
+import { isMobile } from 'react-device-detect';
 
 function App() {
 
   const [TypeOfProperty, setTypeOfProperty] = useState<any>("")
 
   const TakePropertyTypeData = (Type:any) => {
-    setTypeOfProperty(Type)
+    setTypeOfProperty(Type)  
   }
 
   const route = createBrowserRouter([
@@ -56,9 +57,17 @@ function App() {
     
   ])
 
+  const route1 = createBrowserRouter([
+    {
+        path : "/",
+        element : <ComingSoonPage/>,
+    },
+    
+  ])
+
   return (
     <>
-    <RouterProvider router={route}/>
+    <RouterProvider router={ isMobile ? route1 : route}/>
     </>
   );
 }

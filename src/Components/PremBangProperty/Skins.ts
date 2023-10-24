@@ -21,6 +21,10 @@ interface AnimationStartProps {
   marginTop?: string;
 }
 
+interface SubmitButtonProps {
+  marginTop?: string;
+}
+
 export const BaseContainer = styled.div`
   width: 100%;
   position: absolute;
@@ -50,9 +54,9 @@ export const CardContainer = styled.div<AnimationStartProps>`
   animation: ${(props) => (props.AnimationStart ? SlideFromRight : SlideToLeft)}
     0.5s linear;
 
-
-    @media only screen and (max-width: 600px) {
-      width : 70%;
+  @media only screen and (max-width: 600px) {
+    width: 70%;
+    flex-direction: column;
   }
 `;
 
@@ -61,35 +65,11 @@ export const CardColContainer = styled.div`
   height: auto;
   padding: 2em;
   margin: 1em;
-  align-items: center;
-  text-algin: center;
-  justify-content: center;
-  display: flex;
-  flex-direction: column;
-
-`;
-
-export const CardCheckBoxContainer = styled.div`
-  width: auto;
-  height: auto;
-  padding: 1em;
-  margin: 0.5em;
   align-items: left;
   text-algin: left;
   justify-content: left;
   display: flex;
   flex-direction: column;
-`;
-
-export const CardColumnContainerForFacing = styled(CardCheckBoxContainer)`
-padding: 0em;
-margin: 0.2em;
-`;
-
-export const PriceNegoContainer = styled(CardCheckBoxContainer)`
-margin: 0em;
-padding: 0.2em;
-flex-direction: row;
 `;
 
 export const CheckBoxContainer = styled.div`
@@ -104,39 +84,20 @@ export const CheckBoxContainer = styled.div`
   flex-direction: row;
 `;
 
-export const RadioButtonForPrice = styled(CheckBoxContainer)`
-padding: 0.1em;
-margin: 0em;
-`;
-
-export const CheckRowContainer = styled.div`
-  width: auto;
-  height: auto;
-  padding: 0.5em;
-  margin: 0.6em;
-  align-items: left;
-  text-algin: left;
-  justify-content: left;
-  display: flex;
-  flex-direction: row;
-`;
-
 export const InputNameContainer = styled.input`
   align-items: center;
   text-algin: center;
-  width: 30em;
+  width: 23em;
   height: 2em;
   justify-content: center;
   display: flex;
   flex-direction: row;
-  padding-left: 1em;
   padding: 0.5em;
-  margin: 0.5em;
   border-radius: 0.7em;
 
   @media only screen and (max-width: 600px) {
-    width : 100%;
-}
+    width: 100%;
+  }
 `;
 export const InputCheckContainer = styled.input`
   align-items: center;
@@ -150,21 +111,27 @@ export const InputCheckContainer = styled.input`
   border-radius: 0.7em;
 `;
 export const LabelContainer = styled.label`
-  align-items: center;
-  text-algin: center;
+  align-items: left;
+  text-algin: left;
   width: auto;
   height: auto;
-  font-size: 20px;
-  justify-content: center;
-  padding-left: 0.5em;
+  font-size: 18px;
+  justify-content: left;
+  margin-bottom: 0.5em;
+  margin-top: 1em;
+`;
+
+export const LabelContainerForCheckBox = styled(LabelContainer)`
+  margin-bottom: 0em;
+  margin-top: 0.3em;
 `;
 
 export const LabelContainerOnImages = styled(LabelContainer)`
-    margin-bottom :  1em;
-    font-size: 40px;
-    font-weight : 600;
-    text-align : center;
-    color : #3F6184;
+  margin-bottom: 1em;
+  font-size: 40px;
+  font-weight: 600;
+  text-align: center;
+  color: #3f6184;
 `;
 
 export const InputReviewContainer = styled.textarea`
@@ -188,22 +155,21 @@ export const BtnBaseContainer = styled.div`
   justify-content: center;
   display: flex;
   flex-direction: row;
-
 `;
 
-export const SubmitButton = styled.button`
+export const SubmitButton = styled.button<SubmitButtonProps>`
   padding: 0.5em;
   width: auto;
   align-items: center;
   text-algin: center;
   justify-content: center;
-  background-color: #00BF63;
-  border : #00BF63;
+  background-color: #00bf63;
+  border: #00bf63;
   color: white;
   font-size: 17px;
   border-radius: 0.5em;
   box-shadow: 1px 1px 5px #778899;
-  margin-top : 17em;
+  margin-top: ${(props) => (props.marginTop ? props.marginTop : "4em")};
 `;
 
 export const InputImageContainer = styled.input`
@@ -220,23 +186,20 @@ export const InputImageContainer = styled.input`
   border-radius: 0.7em;
   background-color: #f5f6f8;
 
-
   @media only screen and (max-width: 600px) {
-    width : 100%;
-}
+    width: 100%;
+  }
 `;
 
 export const SliderContainer = styled.div`
-width : 50em;
-height : 20em;
-text-align : center;
-background-color: #282c34;
-padding : 3em;
+  width: 50em;
+  height: 20em;
+  text-align: center;
+  background-color: #282c34;
+  padding: 3em;
 `;
 
-
-export const ImageContainer =  styled.img`
-width : 100%;
-height : 20em;
+export const ImageContainer = styled.img`
+  width: 100%;
+  height: 20em;
 `;
-

@@ -97,7 +97,7 @@ export default function LoginIndex() {
         <h3> Admin Login </h3>
         <InputFieldContainer>
           <InputFiled
-            type="tel"
+            type="text"
             placeholder="Enter the Admin Number"
             onChange={(e) => handelPhoneNumber(e)}
           />

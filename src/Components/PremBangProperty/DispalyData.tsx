@@ -55,6 +55,8 @@ export default function DispalyData(props:any) {
         <Carousel img1 = {docs.images.img1} img2 = {docs.images.img2} img3 = {docs.images.img3} img4 = {docs.images.img4}/>
           <h1>{docs.PropertyName}</h1>
           <p>{docs.Prices}</p>
+          <p>{docs.Amenities.Gym}</p>
+          <p>{docs.OwnerAvalibility.value}</p>
         </div>
     ))}
 

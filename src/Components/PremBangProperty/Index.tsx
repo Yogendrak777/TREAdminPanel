@@ -134,16 +134,8 @@ export default function Index(props: any) {
     } else {
       const uid = user.uid;
 
-      if (ImageFile.length == 0) {
-        // alert("Please upload an image first!");
-
-        setShowAnimation(false);
-        setTimeout(() => {
-          setShowLocationSlide(false);
-          setGetImageContainer(false);
-          setShowAdditionInfoSlide(true);
-          setShowAnimation(true);
-        }, 400);
+      if (ImageFile.length < 4) {
+        alert("Please upload the images");
       } else {
         setFile(ImageFile);
         ImageFile.forEach((element: any) => {
@@ -155,13 +147,6 @@ export default function Index(props: any) {
               setPercent(
                 (snapshot.bytesTransferred / snapshot.totalBytes) * 100
               );
-              setShowAnimation(false);
-              setTimeout(() => {
-                setGetImageContainer(false);
-                setShowAdditionInfoSlide(true);
-                setShowAnimation(true);
-                setUniqueId("id" + Math.random().toString(36).slice(2));
-              }, 400);
 
               switch (snapshot.state) {
                 case "paused":
@@ -179,6 +164,15 @@ export default function Index(props: any) {
               getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                 let index = ImageFile.indexOf(element);
                 ImageFile[index] = downloadURL;
+                setTimeout(() => {
+                  setShowAnimation(false);
+                  setTimeout(() => {
+                    setGetImageContainer(false);
+                    setShowAdditionInfoSlide(true);
+                    setShowAnimation(true);
+                    setUniqueId("id" + Math.random().toString(36).slice(2));
+                  }, 400);
+                }, 1000);
               });
             }
           );
@@ -231,7 +225,7 @@ export default function Index(props: any) {
           PropertyTax: getPropertyTaxData.value,
           OccupancyCertificate: getOccupancyCertificateData.value,
           OwerShow: getOwerShowData.value,
-          OwnerAvalibility: getOwnerAvalibilityData.value,
+          OwnerAvalibility: getOwnerAvalibilityData,
           Amenities: {
             ClubHouse: getClubhouse,
             Gym: getGym,
@@ -251,12 +245,10 @@ export default function Index(props: any) {
         alert("Upload Successful  id : " + docRef.id);
         navigate("/DisplayProperty");
       } catch (e) {
-        console.error("Error adding document: ", e);
-        navigate("/DisplayProperty");
+        alert("Error adding document: " + e);
       }
     } catch (e) {
-      console.error("Error adding document: ", e);
-      navigate("/DisplayProperty");
+      alert("Error adding document: "+ e);
     }
   };
 
@@ -307,12 +299,7 @@ export default function Index(props: any) {
   };
 
   const HandelOwnerAvalibitilySlide = () => {
-    setShowAnimation(false);
-    setTimeout(() => {
-      setShowYourAvailabilitySlide(false);
-      HandelSubmitBtn();
-      setShowAnimation(true);
-    }, 400);
+    HandelSubmitBtn();
   };
 
   const handlePropertyName = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -546,7 +533,7 @@ export default function Index(props: any) {
               onChange={setGetApartmentTypeData}
               options={ApartmentType}
               placeholder="ApartmentType"
-              isSearchable
+              
             />
 
             <LabelContainer> Apartment Society / Project Name* </LabelContainer>
@@ -569,7 +556,7 @@ export default function Index(props: any) {
               onChange={setShowBHKData}
               options={BHKType}
               placeholder="BHK Type"
-              isSearchable
+              
             />
 
             <LabelContainer> Super Built up area* </LabelContainer>
@@ -600,7 +587,7 @@ export default function Index(props: any) {
               onChange={setShowFacingData}
               options={FacingDirection}
               placeholder="Facing Direction"
-              isSearchable
+              
             />
 
             <LabelContainer> Property Age* </LabelContainer>
@@ -616,7 +603,7 @@ export default function Index(props: any) {
               onChange={setShowFPropertyAgeData}
               options={PropertyAge}
               placeholder="Property Age"
-              isSearchable
+              
             />
 
             <LabelContainer> Floor* </LabelContainer>
@@ -642,10 +629,10 @@ export default function Index(props: any) {
           </CardColContainer>
 
           { 
-          getApartmentTypeData.value !== "N/A" && 
-          getBHKData.value !== "N/A"  && 
-          getPropertyAgeData.value!== "N/A" && 
-          getFacingData.value !== "N/A"  && 
+          getApartmentTypeData !== "N/A" && 
+          getBHKData !== "N/A"  && 
+          getPropertyAgeData !== "N/A" && 
+          getFacingData !== "N/A"  && 
           (getAvalibleFrom !== "") &&
           (getTotalFloor !== "") &&
           (getFloor !== "") &&
@@ -692,7 +679,7 @@ export default function Index(props: any) {
               onChange={setFurnishingeData}
               options={FurnishingType}
               placeholder="Furnishing Type"
-              isSearchable
+              
             />
 
             <LabelContainer> Parking* </LabelContainer>
@@ -708,9 +695,10 @@ export default function Index(props: any) {
               onChange={setParkingData}
               options={ParkingType}
               placeholder="Parking Type"
-              isSearchable
+              
             />
           </CardColContainer>
+
           <CardColContainer>
             <LabelContainer> Negotiable / Not* </LabelContainer>
             <Select
@@ -733,13 +721,20 @@ export default function Index(props: any) {
               placeholder="Write the about the project / property"
             />
           </CardColContainer>
-
+            {
+              getPricesnegotiable !== "N/A" &&
+              getParking !== "N/A" &&
+              getFurnishing !== "N/A" &&
+             (getMaintenance !== "") &&
+              (getPrices !== "") &&
+              (getDescription !== "") &&
           <BtnBaseContainer>
             <SubmitButton onClick={handleSalesDetailsSlide}>
               {" "}
               Next &gt;
             </SubmitButton>
           </BtnBaseContainer>
+            } 
         </CardContainer>
       )}
 
@@ -775,7 +770,7 @@ export default function Index(props: any) {
               onChange={setPowerData}
               options={PowerSupply}
               placeholder="Power supply"
-              isSearchable
+              
             />
 
             <LabelContainer> Amenities* </LabelContainer>
@@ -862,7 +857,7 @@ export default function Index(props: any) {
               onChange={setSecurityData}
               options={Security}
               placeholder="Security"
-              isSearchable
+              
             />
 
             <CheckBoxContainer>
@@ -945,12 +940,19 @@ export default function Index(props: any) {
                 visitors parking{" "}
               </LabelContainerForCheckBox>
             </CheckBoxContainer>
+
+            {
+              getSecurity !== "N/A" &&
+              getWater !== "N/A" &&
+              getPower !== "N/A" &&
+
             <BtnBaseContainer>
               <SubmitButton marginTop="2em" onClick={HandleAmenitiesSlide}>
                 {" "}
                 Next &gt;
               </SubmitButton>
-            </BtnBaseContainer>
+            </BtnBaseContainer> 
+            }
           </CardColContainer>
         </CardContainer>
       )}
@@ -986,12 +988,19 @@ export default function Index(props: any) {
               onChange={handleContantData}
             />
           </CardColContainer>
+
+          {
+            getContentData !== "" &&
+            getAddressData !== "" &&
+            getLocalityData !== "" &&
+            getcityData !== "" &&
+
           <BtnBaseContainer>
             <SubmitButton onClick={handleLocationDetailsSlide}>
               {" "}
               Next &gt;
             </SubmitButton>
-          </BtnBaseContainer>
+          </BtnBaseContainer> }
         </CardContainer>
       )}
 
@@ -1056,7 +1065,7 @@ export default function Index(props: any) {
               onChange={setKathaData}
               options={KhataType}
               placeholder="Khata Type"
-              isSearchable
+              
             />
 
             <LabelContainer> Sale Seed* </LabelContainer>
@@ -1072,7 +1081,7 @@ export default function Index(props: any) {
               onChange={setSaleSeedData}
               options={SeedType}
               placeholder="Sale Seed"
-              isSearchable
+              
             />
 
             <LabelContainer> Property tax* </LabelContainer>
@@ -1088,7 +1097,7 @@ export default function Index(props: any) {
               onChange={setPropertyTaxData}
               options={PropertyTaxType}
               placeholder="Sale Seed"
-              isSearchable
+              
             />
 
             <LabelContainer> Occupancy Certificate* </LabelContainer>
@@ -1104,15 +1113,22 @@ export default function Index(props: any) {
               onChange={setOccupancyCertificateData}
               options={SeedType}
               placeholder="occupancy certificate"
-              isSearchable
+              
             />
           </CardColContainer>
+          
+          {
+            getOccupancyCertificateData !== "N/A" &&
+            getPropertyTaxData !== "N/A" &&
+            getSaleSeedData !== "N/A" &&
+            getKathaData !== "N/A" &&
+          
           <BtnBaseContainer>
             <SubmitButton onClick={handleAdditionalInfoSlide}>
               {" "}
               Next &gt;
             </SubmitButton>
-          </BtnBaseContainer>
+          </BtnBaseContainer> }
         </CardContainer>
       )}
 
@@ -1132,7 +1148,7 @@ export default function Index(props: any) {
               onChange={setOwerShowData}
               options={OwnerShowType}
               placeholder="Who will show the property"
-              isSearchable
+              
             />
             <br />
 
@@ -1152,17 +1168,20 @@ export default function Index(props: any) {
                   onChange={setOwnerAvalibilityData}
                   options={OwnerAvalibilyType}
                   placeholder="Availability"
-                  isSearchable
+                  
                 />
               </div>
             )}
           </CardColContainer>
+          {
+            getOwerShowData !== "N/A" &&
+          
           <BtnBaseContainer>
             <SubmitButton onClick={HandelOwnerAvalibitilySlide}>
               {" "}
               Next &gt;
             </SubmitButton>
-          </BtnBaseContainer>
+          </BtnBaseContainer>}
         </CardContainer>
       )}
     </BaseContainer>

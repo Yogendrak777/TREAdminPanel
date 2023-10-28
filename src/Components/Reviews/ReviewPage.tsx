@@ -3,6 +3,7 @@ import { ReviewBaseContainer, CardContainer, InputNameContainer, InputReviewCont
 import { getFirestore, collection, addDoc, getDocs,setDoc, doc, getDocFromCache, query, where, getDoc } from "firebase/firestore";
 import { App } from "../FirebaseConfig/Firebase"
 import { getAuth } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 
 export default function ReviewPage() {
@@ -12,6 +13,7 @@ export default function ReviewPage() {
   const [reviewerName, setReviewerName] = useState<string>("");
   const auth = getAuth(App);
   const user:any = auth.currentUser;
+  const navigate =  useNavigate();
 
     //const AddData = async() => {
 
@@ -70,9 +72,6 @@ export default function ReviewPage() {
                 
           
           
-          
-          
-          
           // get All data in particular instance
           
           // const querySnapshot = await getDocs(collection(db, "Review"));
@@ -112,6 +111,7 @@ export default function ReviewPage() {
             });
            
            alert("Document written with ID: "+ docRef.id);
+           navigate("/home")
           
           } catch (e) {
             console.error("Error adding document: ", e);

@@ -10,7 +10,6 @@ export const ReviewBaseContainer = styled.div`
     justify-content: center;
     display: flex;
     flex-direction: column;
-    
 `;
 
 export const CardContainer = styled.div`
@@ -29,7 +28,6 @@ export const CardContainer = styled.div`
     @media only screen and (max-width: 600px) {
         width : 70%;
     }
-
 `;
 
 export const InputNameContainer = styled.input`
@@ -45,11 +43,10 @@ export const InputNameContainer = styled.input`
     margin : 0.5em;
     border-radius : 0.7em;
 
-
     @media only screen and (max-width: 600px) {
         width : 10em;
     }
-`
+`;
 
 export const InputReviewContainer = styled.textarea`
     align-items: center;
@@ -63,7 +60,6 @@ export const InputReviewContainer = styled.textarea`
     padding : 0.5em;
     margin : 0.5em;
     border-radius : 0.7em;
-
 
     @media only screen and (max-width: 600px) {
         width : 100%;

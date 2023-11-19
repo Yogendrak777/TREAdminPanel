@@ -14,7 +14,7 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
-import { App } from "..//FirebaseConfig/Firebase";
+import { App } from "../FirebaseConfig/Firebase";
 
 export default function LoginIndex() {
   const navigate = useNavigate();

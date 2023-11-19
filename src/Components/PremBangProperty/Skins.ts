@@ -203,3 +203,17 @@ export const ImageContainer = styled.img`
   width: 100%;
   height: 20em;
 `;
+
+export const Input = styled.input`
+    margin: 0.5em;
+    width: 95%;
+    border: none;
+    outline: none;
+    border-bottom: 1px solid #ccc;
+    padding : 5px;
+
+    &:focus {
+        border-bottom: 1px solid #00BF63;
+      }
+`;
+

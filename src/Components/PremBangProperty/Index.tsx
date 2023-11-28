@@ -58,6 +58,7 @@ export default function Index(props: any) {
   const [getFloor, setShowFloorData] = useState<any>("");
   const [getTotalFloor, setShowTotalFloorData] = useState<any>("");
   const [getPrices, setPricesData] = useState<any>("N/A");
+  const [getRentPrices, setRentPricesData] = useState<any>("N/A");
   const [getMaintenance, setMaintenanceData] = useState<any>("");
   const [getPricesnegotiable, setPricesnegotiableData] = useState<any>("N/A");
   const [getEmiData, setEmiData] = useState<any>("N/A");
@@ -186,7 +187,7 @@ export default function Index(props: any) {
                     setShowAnimation(true);
                     setUniqueId("id" + Math.random().toString(36).slice(2));
                   }, 400);
-                }, 1000);
+                }, 3000);
               });
             }
           );
@@ -224,14 +225,15 @@ export default function Index(props: any) {
           Floor: getFloor,
           TotalFloor: getTotalFloor,
           Prices: Number(getPrices.value),
-          RentAmount: getPrices.label,
+          SaleAmount: getPrices.label || 'N/A',
+          RentPrices : getRentPrices.label || 'N/A',
           Advance: getAdvanceData,
           MaintenanceCost: getMaintenance,
           BuyOrRent: getBuyOrRentData,
           Negotiable: getPricesnegotiable.value,
           Furnishing: getFurnishing.value,
-          EmiAmount: getEmiInputData,
-          Emi: getEmiData,
+          EmiAmount: getEmiInputData || 'N/A',
+          Emi: getEmiData.value ||'N/A' ,
           Parking: getParking.value,
           Description: getDescription,
           WaterSupply: getWater.value,
@@ -269,7 +271,7 @@ export default function Index(props: any) {
           },
         });
         alert("Upload Successful  id : " + docRef.id);
-        navigate("/DisplayProperty");
+        navigate("/home");
       } catch (e) {
         alert("Error adding document: " + e);
       }
@@ -605,7 +607,28 @@ export default function Index(props: any) {
   const BuyOrRent = [
     { value: "Sale", label: "Sale" },
     { value: "Rent", label: "Rent" },
-    { value: "lease", label: "Lease" },
+    { value: "Lease", label: "Lease" },
+  ];
+
+  const RentAmountType = [
+    { value: 3, label: "1 to 5 k" },
+    { value: 7, label: "6 to 10 k" },
+    { value: 13, label: "11 to 15 k" },
+    { value: 17, label: "16 to 20 k" },
+    { value: 23, label: "21 to 25 k" },
+    { value: 27, label: "26 to 30 k" },
+    { value: 33, label: "31 to 35 k" },
+    { value: 37, label: "36 to 40 k" },
+    { value: 43, label: "41 to 45 k" },
+    { value: 47, label: "46 to 50 k" },
+    { value: 53, label: "51 to 55 k" },
+    { value: 57, label: "56 to 60 k" },
+    { value: 63, label: "61 to 65 k" },
+    { value: 67, label: "66 to 70 k" },
+    { value: 73, label: "71 to 75 k" },
+    { value: 77, label: "76 to 80 k" },
+    { value: 83, label: "81 to 85 k" },
+    { value: 87, label: "86 to 90 k" },
   ];
 
   const BuggetType = [
@@ -792,7 +815,7 @@ export default function Index(props: any) {
               value={getTotalFloor}
               onChange={(e: any) => setShowTotalFloorData(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder="Example : 5"
+              placeholder="Example : 7"
             />
           </CardColContainer>
 
@@ -818,20 +841,6 @@ export default function Index(props: any) {
       {showSaleDetailsSlide && (
         <CardContainer marginTop="3em" AnimationStart={showAnimation}>
           <CardColContainer>
-            <LabelContainer> Bugget Range </LabelContainer>
-            <Select
-              styles={{
-                control: (baseStyles) => ({
-                  ...baseStyles,
-                  padding: "3px",
-                  fontStyle: "italic",
-                }),
-              }}
-              defaultValue={getPrices}
-              onChange={setPricesData}
-              options={BuggetType}
-              placeholder="Bugget Range"
-            />
             <LabelContainer> Sell/Rent/Lease </LabelContainer>
             <Select
               styles={{
@@ -846,6 +855,42 @@ export default function Index(props: any) {
               options={BuyOrRent}
               placeholder="Bugget Range"
             />
+          {(getBuyOrRentData.value === "Sale" || getBuyOrRentData.value === 'Lease') && (
+            <>
+          <LabelContainer> Bugget Range </LabelContainer>
+            <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "3px",
+                  fontStyle: "italic",
+                }),
+              }}
+              defaultValue={getPrices}
+              onChange={setPricesData}
+              options={BuggetType}
+              placeholder="Bugget Range"
+            />
+            </>)}
+            
+            {getBuyOrRentData.value === "Rent" && (
+            <>
+            <LabelContainer> Rent Range </LabelContainer>
+             <Select
+              styles={{
+                control: (baseStyles) => ({
+                  ...baseStyles,
+                  padding: "3px",
+                  fontStyle: "italic",
+                }),
+              }}
+              defaultValue={getRentPrices}
+              onChange={setRentPricesData}
+              options={RentAmountType}
+              placeholder="Rent Range"
+            />
+            </>   
+        )}
 
             <LabelContainer> Monthly Maintenance : </LabelContainer>
 
@@ -957,7 +1002,6 @@ export default function Index(props: any) {
             getParking !== "N/A" &&
             getFurnishing !== "N/A" &&
             getMaintenance !== "" &&
-            getPrices !== "N/A" &&
             getDescription !== "" && (
               <BtnBaseContainer>
                 <SubmitButton onClick={handleSalesDetailsSlide}>
